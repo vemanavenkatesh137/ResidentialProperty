@@ -22,8 +22,7 @@ public class ResidentialPropertyService {
 
     public void propertyTaxService(ResidentialPropertyRequestPayload requestPayload) throws Exception {
         ResidentialPropertyEntity entity = new ResidentialPropertyEntity();
-        ZoneValue result  = taxCalulation(requestPayload);
-        double taxValue = result.getTaxValue();
+        double taxValue = taxCalulation(requestPayload);
         double total1 = requestPayload.getBuiltUpArea()*taxValue*10;
         double depreciationValue = requestPayload.getYearAssessment()-requestPayload.getConstructedYear() <60 ? ((requestPayload.getYearAssessment()-requestPayload.getConstructedYear())/100) : 0.6;
         double total2 = total1 - (total1*depreciationValue);
@@ -43,7 +42,7 @@ public class ResidentialPropertyService {
         entity.setTotalPropertyTax(total5);
         residentialPropertyRepository.save(entity);
     }
-    public ZoneValue taxCalulation(ResidentialPropertyRequestPayload requestPayload) throws Exception {
+    public double taxCalulation(ResidentialPropertyRequestPayload requestPayload) throws Exception {
         if((requestPayload.getDescription() !=null && !requestPayload.getDescription().isEmpty()) && (requestPayload.getStatus() !=null && !requestPayload.getStatus().isEmpty()) && (requestPayload.getZonalClassification() !=null && !requestPayload.getZonalClassification().isEmpty())){
             return taxValueRepository.findTaxValueByFields(requestPayload.getDescription(),requestPayload.getStatus(),requestPayload.getZonalClassification());
         }else{
